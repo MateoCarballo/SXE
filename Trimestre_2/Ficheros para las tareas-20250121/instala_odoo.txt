@@ -1,0 +1,86 @@
+#Creamos un usuario específico para manejar odoo y grupo de sistema 'operador_odoo':
+sudo adduser --system --quiet --shell=/bin/bash --home=/opt/odoo --gecos 'operador_odoo' --group operador_odoo
+
+#Le ponemos contraseña (abc123.)
+sudo passwd operador_odoo
+
+#Creamos los directorios donde se almacenará el archivo de configuración y log de odoo:
+sudo mkdir /etc/odoo
+sudo mkdir /var/log/odoo/
+
+#Hacemos propietario de dichos directorios a nuestro nuevo usuario 
+sudo chown operador_odoo:operador_odoo /opt/odoo/ -R
+sudo chown operador_odoo:operador_odoo /var/log/odoo/ -R
+
+#Instalamos el SGB Postgres los paquetes y librerías necesarios para manejar Odoo.:
+sudo apt-get install -y python3-pip
+sudo apt-get install -y python3-dev libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev
+sudo apt-get install -y git
+sudo apt-get install -y npm
+sudo npm install -g less less-plugin-clean-css
+sudo apt-get install -y node-less
+sudo apt-get install -y postgresql
+
+#Creamos un usuario para la base de datos y una base de datos vacía dentro del SGB
+#Primero cambiamos la contraseña del usuario postgres para poder loguearnos con él. Por variar, usaremos abc123.
+sudo su 
+passwd postgres
+su – postgres 
+createuser --createdb --username postgres --no-createrole --no-superuser operador_odoo
+
+#Seguimos logueados con el usuario postgres, accedemos a psql para crear nuestra bd ficticia y darle privilegios a nuestro usuario
+psql
+create user admin_bd_empresa1 with password abc123..
+create database bd_empresa1
+grant all on database bd_empresa1 to admin_bd_empresa1
+alter database bd_empresa1 owner to admin_bd_empresa1
+alter user operador_odoo with superuser\q
+\q
+exit
+
+#Nos logueamos como operador_odoo y descargamos la version 17 desde GIT(*): 
+su - operador_odoo git clone --depth 1 --branch 17.0 --single-branch https://github.com/odoo/odoo /opt/odoo/odoo
+exit
+
+#Instalamos las dependencias de python3:
+sudo pip3 install -r /opt/odoo/odoo/requirements.txt 
+
+#Es probable que nos de un error sobre el entorno. Lo resolvemos eliminando esta librería
+rm /usr/lib/python3.12/EXTERNALLY-MANAGED
+sudo pip3 install -r /opt/odoo/odoo/requirements.txt 
+
+#Descargamos dependencias e instalar wkhtmltopdf para generar PDF en odoo
+sudo apt install fontconfig xfonts-base xfonts-75dpi -y
+cd /tmp
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+sudo dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+
+#Creamos un enlace simbólico a la herramienta para que cualquier usuario pueda utilizarla desde cualquier ruta
+sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin/
+sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin/
+
+#Creamos la configuracion de Odoo. Con este comando lanzamos el servidor con los datos de conexión de la bd, la instalación inicial del módulo base de odoo, la direccción de los addons disponibles, indicamos que no queremos datos de prueba, la orden de crear el archivo de configuración y el apagado inmediato del servidor cuando compruebe que todo está correcto:
+su - operador_odoo -c "/opt/odoo/odoo/odoo-bin --addons-path=/opt/odoo/odoo/addons -s --without-demo=all --stop-after-init"
+
+#El archivo de configuración creado estará en /opt/odoo/.odoorc. Podemos ver como se cargaron nuestro parámetros con el comaando cat: 
+cat /opt/odoo/.odoorc 
+
+#Modificamos el fichero de configuración con los datos de nuestra bd ficticia y el directorio para logs creado anteriormente:
+nano /opt/odoo/.odoorc 
+
+
+####Modificamos los siguientes parámetros
+db_name = bd_empresa1
+db_password = abc123..
+db_user = admin_bd_empresa1
+logfile = /var/log/odoo/log.txt
+
+#Creamos el archivo de configuracion de odoo y hacemos propietario a operador_odoo, con permisos de ejecución:
+sudo mv /opt/odoo/.odoorc /etc/odoo/odoo.conf
+chown operador_odoo /etc/odoo/odoo.conf
+chmod 777 /etc/odoo/odoo.conf
+
+#Nos movemos al directorio donde se encuentra el ejecutable y lanzamos el programa
+su operador_odoo
+cd /opt/odoo/odoo/
+./odoo-bin

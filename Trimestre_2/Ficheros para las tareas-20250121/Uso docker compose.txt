@@ -1,0 +1,16 @@
+#### Antes de lanzar nuestro contenedor, tenemos que preparar el sistema:
+1. Actualizay y descargar los paquetes necesarios
+sudo apt-get update
+sudo apt install docker
+sudo snap install docker
+
+
+2. Crear los directorios. SIEMPRE se crean los contenedores desde el directorio donde hayáis guardado el archivo de creación (.yml). Se recomienda crear una carpeta por cada fichero yml, de forma que tengáis la siguiente estructura para Desarrollo e ídem para Producción:
+Documentos -> Odoo -> Desarrollo -> [docker-compose.yml]
+
+3. Levantar el servicio con docker compose con la sentencia siguiente:
+sudo docker-compose -f  docker-compose.yml up 
+(este proceso tardará un poco...paciencia)
+
+
+
