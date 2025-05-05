@@ -1,0 +1,51 @@
+2. 🍅 Frutas del Valle
+Tipo de proveedor: Frutas y verduras (para bowls, zumos, acompañamientos)
+
+Dirección: Camino del Huerto 45, 46007 Valencia
+
+Teléfono: 963 987 654
+
+Email: contacto@frutasvalle.es
+
+NIF: B87654321
+
+Productos habituales: Plátanos, fresas, arándanos, tomates, aguacates, naranjas.
+
+3. 🥖 Horno y Tradición S.A.
+Tipo de proveedor: Pan, bollería, Nutella, productos de desayuno
+
+Dirección: Avinguda Forn 33, 08018 Barcelona
+
+Teléfono: 931 112 233
+
+Email: ventas@hornotradicion.com
+
+NIF: A11223344
+
+Productos habituales: Pan de barra, pan integral, croissants, bollos, Nutella (tarros), mantequilla.
+
+4. 🧼 LimpioPlus
+Tipo de proveedor: Productos de limpieza e higiene
+
+Dirección: Polígono Higiene, Nave 5, 41007 Sevilla
+
+Teléfono: 954 334 556
+
+Email: pedidos@limpioplus.es
+
+NIF: B55667788
+
+Productos habituales: Detergentes, desinfectantes, servilletas, papel higiénico, guantes, escobas.
+
+5. 🧊 Hielo Rápido S.L. (opcional)
+Tipo de proveedor: Hielo para cafés con hielo y conservación
+
+Dirección: Calle Fría 8, 28990 Madrid
+
+Teléfono: 917 889 900
+
+Email: info@hielorapido.es
+
+NIF: B99887766
+
+Productos habituales: Bolsas de hielo picado, cubitos, hielo industrial.
